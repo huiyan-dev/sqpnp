@@ -1,0 +1,14 @@
+{
+    "editor.formatOnSave": true,
+    // ------------------------------------------- cmake tools -------------------------------------------
+    "cmake.buildTask": true,
+    "cmake.configureOnEdit": false,
+    "cmake.configureArgs": [
+        // build args
+    ],
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.installPrefix": "${workspaceFolder}/install",
+    "cmake.configureOnOpen": false,
+    // "cmake.useCMakePresets": "always",
+    // ------------------------------------------- cmake tools -------------------------------------------
+}
