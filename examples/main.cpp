@@ -20,14 +20,24 @@ void GenerateSyntheticPoints(int n,
 			    )
 {
     assert( n > 2);
-    
+    // intrinsics
     cv::Matx<double, 3,3> K(1400, 0, 1000, 
 			    0, 1400, 900,
 			    0, 0, 1);
-
+    // 2d pixel noise, fx and fy are equal, if not should uese std_noise_x, std_noise_y
     const double std_noise = std_pixel_noise / 1400;
     const double depth = 7*radius; // depth of the barycenter of the points
-    
+    //                          `
+    //                             `
+    //                                `
+    //                                   `
+    //                                  |   `
+    //      <---------------------------|------+ Camera Center
+    //                                  <   f  >
+    //      <          depth = 7*radius        >
+    // C is the origin of 3D Point, all generated points are localted at its near.
+    // The points space is a sphere with radius
+    // The generator is Generated Point = std::normal_distribution<double>(C, radius), radius)
     const cv::Point3_<double> C(radius / 4, radius / 4, depth );
     
     
