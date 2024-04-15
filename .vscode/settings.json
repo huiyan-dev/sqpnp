@@ -5,6 +5,7 @@
     "cmake.configureOnEdit": false,
     "cmake.configureArgs": [
         // build args
+        "-G=Ninja"
     ],
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.installPrefix": "${workspaceFolder}/install",
