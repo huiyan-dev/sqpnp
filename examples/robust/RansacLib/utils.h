@@ -46,22 +46,22 @@ namespace utils {
 // here following: https://lemire.me/blog/2016/10/10/a-case-study-in-the-
 // performance-cost-of-abstraction-cs-stdshuffle/
 inline void RandomShuffle(std::mt19937* rng, std::vector<int>* random_sample) {
-  std::vector<int>& sample = *random_sample;
-  const int kNumElements = static_cast<int>(sample.size());
+  std::vector<int>& sample       = *random_sample;
+  const int         kNumElements = static_cast<int>(sample.size());
   for (int i = 0; i < (kNumElements - 1); ++i) {
     std::uniform_int_distribution<int> dist(i, kNumElements - 1);
-    int idx = dist(*rng);
+    int                                idx = dist(*rng);
     std::swap(sample[i], sample[idx]);
   }
 }
 
 template <class T>
 inline void RandomShuffle(std::mt19937* rng, std::vector<T>* random_sample) {
-  std::vector<T>& sample = *random_sample;
-  const int kNumElements = static_cast<int>(sample.size());
+  std::vector<T>& sample       = *random_sample;
+  const int       kNumElements = static_cast<int>(sample.size());
   for (int i = 0; i < (kNumElements - 1); ++i) {
     std::uniform_int_distribution<int> dist(i, kNumElements - 1);
-    int idx = dist(*rng);
+    int                                idx = dist(*rng);
     std::swap(sample[i], sample[idx]);
   }
 }
@@ -73,9 +73,9 @@ inline void RandomShuffleAndResize(const int target_size, std::mt19937* rng,
 }
 
 // RandomShuffleAndResize variants for Hybrid RANSAC.
-inline void RandomShuffleAndResize(
-    const int target_size, std::mt19937* rng,
-    std::vector<std::vector<int>>* random_sample) {
+inline void
+RandomShuffleAndResize(const int target_size, std::mt19937* rng,
+                       std::vector<std::vector<int>>* random_sample) {
   const int kNumDataTypes = static_cast<int>(random_sample->size());
   std::vector<std::pair<int, int>> data;
   for (int i = 0; i < kNumDataTypes; ++i) {
@@ -93,12 +93,12 @@ inline void RandomShuffleAndResize(
   }
 }
 
-inline void RandomShuffleAndResize(
-    const std::vector<int> sample_sizes, std::mt19937* rng,
-    std::vector<std::vector<int>>* random_sample) {
+inline void
+RandomShuffleAndResize(const std::vector<int> sample_sizes, std::mt19937* rng,
+                       std::vector<std::vector<int>>* random_sample) {
   const int kNumDataTypes = static_cast<int>(random_sample->size());
   for (int i = 0; i < kNumDataTypes; ++i) {
-    const int kNumData = static_cast<int>((*random_sample)[i].size());
+    const int kNumData    = static_cast<int>((*random_sample)[i].size());
     const int kSampleSize = std::min(kNumData, sample_sizes[i]);
     RandomShuffleAndResize(kSampleSize, rng, &((*random_sample)[i]));
   }
@@ -107,32 +107,26 @@ inline void RandomShuffleAndResize(
 // Computes the number of RANSAC iterations required for a given inlier
 // ratio, the probability of missing the best model, and sample size.
 // Assumes that min_iterations <= max_iterations.
-inline uint32_t NumRequiredIterations(const double inlier_ratio,
-                                      const double prob_missing_best_model,
-                                      const int sample_size,
+inline uint32_t NumRequiredIterations(const double   inlier_ratio,
+                                      const double   prob_missing_best_model,
+                                      const int      sample_size,
                                       const uint32_t min_iterations,
                                       const uint32_t max_iterations) {
-  if (inlier_ratio <= 0.0) {
-    return max_iterations;
-  }
-  if (inlier_ratio >= 1.0) {
-    return min_iterations;
-  }
+  if (inlier_ratio <= 0.0) { return max_iterations; }
+  if (inlier_ratio >= 1.0) { return min_iterations; }
 
   const double kProbNonInlierSample =
       1.0 - std::pow(inlier_ratio, static_cast<double>(sample_size));
   // If the probability of sampling a non-all-inlier sample is at least
-  // 0.99999999999999, RANSAC will take at least 1e+13 iterations for 
+  // 0.99999999999999, RANSAC will take at least 1e+13 iterations for
   // realistic values for prob_missing_best_model (0.5 or smaller).
   // In practice, max_iterations will be smaller.
-  if (kProbNonInlierSample >= 0.99999999999999) {
-    return max_iterations;
-  }
-  
-  const double kLogNumerator = std::log(prob_missing_best_model);
+  if (kProbNonInlierSample >= 0.99999999999999) { return max_iterations; }
+
+  const double kLogNumerator   = std::log(prob_missing_best_model);
   const double kLogDenominator = std::log(kProbNonInlierSample);
 
-  double num_iters = std::ceil(kLogNumerator / kLogDenominator + 0.5);
+  double   num_iters = std::ceil(kLogNumerator / kLogDenominator + 0.5);
   uint32_t num_req_iterations =
       std::min(static_cast<uint32_t>(num_iters), max_iterations);
   num_req_iterations = std::max(min_iterations, num_req_iterations);
@@ -141,7 +135,8 @@ inline uint32_t NumRequiredIterations(const double inlier_ratio,
 
 inline uint32_t NumRequiredIterations(const std::vector<double> inlier_ratios,
                                       const double prob_missing_best_model,
-                                      const std::vector<int> sample_sizes,
+                                      const std::vector<int>
+                                                     sample_sizes,
                                       const uint32_t min_iterations,
                                       const uint32_t max_iterations) {
   const int kNumDataTypes = static_cast<int>(sample_sizes.size());
@@ -151,33 +146,27 @@ inline uint32_t NumRequiredIterations(const std::vector<double> inlier_ratios,
     prob_all_inlier_sample *=
         std::pow(inlier_ratios[i], static_cast<double>(sample_sizes[i]));
   }
-  if (prob_all_inlier_sample <= 0.0) {
-    return max_iterations;
-  }
-  if (prob_all_inlier_sample >= 1.0) {
-    return min_iterations;
-  }
+  if (prob_all_inlier_sample <= 0.0) { return max_iterations; }
+  if (prob_all_inlier_sample >= 1.0) { return min_iterations; }
 
   const double kProbNonInlierSample = 1.0 - prob_all_inlier_sample;
   // If the probability of sampling a non-all-inlier sample is at least
-  // 0.99999999999999, RANSAC will take at least 1e+13 iterations for 
+  // 0.99999999999999, RANSAC will take at least 1e+13 iterations for
   // realistic values for prob_missing_best_model (0.5 or smaller).
   // In practice, max_iterations will be smaller.
-  if (kProbNonInlierSample >= 0.99999999999999) {
-    return max_iterations;
-  }
-  
-  const double kLogNumerator = std::log(prob_missing_best_model);
+  if (kProbNonInlierSample >= 0.99999999999999) { return max_iterations; }
+
+  const double kLogNumerator   = std::log(prob_missing_best_model);
   const double kLogDenominator = std::log(kProbNonInlierSample);
 
-  double num_iters = std::ceil(kLogNumerator / kLogDenominator + 0.5);
+  double   num_iters = std::ceil(kLogNumerator / kLogDenominator + 0.5);
   uint32_t num_req_iterations =
       std::min(static_cast<uint32_t>(num_iters), max_iterations);
   num_req_iterations = std::max(min_iterations, num_req_iterations);
   return num_req_iterations;
 }
 
-}  // namespace utils
-}  // namespace ransac_lib
+}    // namespace utils
+}    // namespace ransac_lib
 
-#endif  // RANSACLIB_RANSACLIB_UTILS_H_
+#endif    // RANSACLIB_RANSACLIB_UTILS_H_

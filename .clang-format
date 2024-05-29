@@ -1,0 +1,171 @@
+---
+UseTab: Never
+TabWidth: 2
+SpacesInSquareBrackets: false
+SpacesInParensOptions:
+  InConditionalStatements: false
+  InCStyleCasts: false
+  InEmptyParentheses: false
+  Other: false
+SpacesInLineCommentPrefix:
+  Minimum: 1
+  Maximum: 1
+SpacesInContainerLiterals: false
+SpacesInAngles: Never
+SpacesBeforeTrailingComments: 4
+SpaceInEmptyBlock: false
+SpaceBeforeSquareBrackets: false
+SpaceBeforeRangeBasedForLoopColon: false
+SpaceBeforeParensOptions:
+  AfterControlStatements: false
+  AfterForeachMacros: false
+  AfterFunctionDeclarationName: false
+  AfterFunctionDefinitionName: false
+  AfterIfMacros: false
+  AfterOverloadedOperator: false
+  AfterPlacementOperator: false
+  AfterRequiresInClause: false
+  AfterRequiresInExpression: false
+  BeforeNonEmptyParentheses: false
+SpaceBeforeInheritanceColon: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeCaseColon: true
+SpaceBeforeAssignmentOperators: true
+SpaceAroundPointerQualifiers: Default
+SpaceAfterTemplateKeyword: true
+SpaceAfterLogicalNot: false
+SpaceAfterCStyleCast: true
+SortUsingDeclarations: Never
+SortIncludes: Never
+SkipMacroDefinitionBody: true
+ShortNamespaceLines: 1
+SeparateDefinitionBlocks: Always
+RequiresExpressionIndentation: Keyword
+RequiresClausePosition: WithFollowing
+RemoveSemicolon: true
+RemoveParentheses: Leave
+RemoveBracesLLVM: false
+ReflowComments: true
+ReferenceAlignment: Left
+QualifierAlignment: Left
+PointerAlignment: Left
+NamespaceIndentation: None
+MaxEmptyLinesToKeep: 1
+LineEnding: LF
+LambdaBodyIndentation: Signature
+KeepEmptyLinesAtTheStartOfBlocks: false
+KeepEmptyLinesAtEOF: false
+IntegerLiteralSeparator:
+  Binary: 4
+  BinaryMinDigits: 7
+  Decimal: 4
+  DecimalMinDigits: 5
+  Hex: 2
+  HexMinDigits: 5
+BinPackArguments: false
+InsertNewlineAtEOF: false
+InsertBraces: true
+IndentWrappedFunctionNames: false
+IndentWidth: 2
+IndentRequiresClause: false
+IndentPPDirectives: None
+IndentExternBlock: NoIndent
+IndentCaseLabels: false
+IndentCaseBlocks: false
+IndentAccessModifiers: false
+IncludeBlocks: Regroup
+FixNamespaceComments: true
+AccessModifierOffset: -2
+AlignAfterOpenBracket: Align
+AlignArrayOfStructures: Right
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: true
+  AlignCompound: true
+  AlignFunctionPointers: true
+  PadOperators: true
+AlignConsecutiveBitFields:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: true
+  AlignCompound: true
+  AlignFunctionPointers: true
+  PadOperators: true
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: true
+  AlignCompound: true
+  AlignFunctionPointers: true
+  PadOperators: true
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: true
+  AlignCompound: true
+  AlignFunctionPointers: true
+  PadOperators: true
+AlignConsecutiveShortCaseStatements:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: true
+  AlignCaseColons: true
+AlignEscapedNewlines: Left
+AlignOperands: Align
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 0
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowBreakBeforeNoexceptSpecifier: OnlyWithParen
+AllowShortBlocksOnASingleLine: Always
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortCompoundRequirementOnASingleLine: true
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLambdasOnASingleLine: Empty
+AllowShortLoopsOnASingleLine: true
+AlwaysBreakTemplateDeclarations: MultiLine
+AlwaysBreakAfterReturnType: None
+ExperimentalAutoDetectBinPacking: true
+EmptyLineBeforeAccessModifier: Always
+EmptyLineAfterAccessModifier: Never
+DerivePointerAlignment: true
+Cpp11BracedListStyle: true
+ContinuationIndentWidth: 4
+ConstructorInitializerIndentWidth: 4
+CompactNamespaces: false
+ColumnLimit: 80
+BreakStringLiterals: true
+BreakInheritanceList: AfterComma
+BreakConstructorInitializers: AfterColon
+BreakBeforeTernaryOperators: true
+BreakBeforeInlineASMColon: Always
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: false
+  AfterControlStatement: Never
+  AfterEnum: false
+  AfterFunction: false
+  AfterNamespace: false
+  AfterObjCDeclaration: false
+  AfterStruct: false
+  AfterUnion: false
+  AfterExternBlock: false
+  BeforeCatch: false
+  BeforeElse: false
+  BeforeWhile: false
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+BracedInitializerIndentWidth: 4
+BreakAdjacentStringLiterals: true
+BreakAfterAttributes: Leave
+BreakArrays: false
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Attach
+BreakBeforeConceptDeclarations: Always

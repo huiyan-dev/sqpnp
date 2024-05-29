@@ -43,11 +43,10 @@
 namespace ransac_lib {
 
 // Implements uniform sampling for RANSAC.
-template <class Solver>
-class UniformSampling {
- public:
-  UniformSampling(const unsigned int random_seed, const Solver& solver)
-      : num_data_(solver.num_data()), sample_size_(solver.min_sample_size()) {
+template <class Solver> class UniformSampling {
+public:
+  UniformSampling(const unsigned int random_seed, const Solver& solver) :
+      num_data_(solver.num_data()), sample_size_(solver.min_sample_size()) {
     rng_.seed(random_seed);
     draw_sample_ = DrawBetterThanShuffle(sample_size_, num_data_);
     uniform_dstr_.param(
@@ -63,7 +62,7 @@ class UniformSampling {
     }
   }
 
- protected:
+protected:
   // Function to decide whether random sampling or shuffling is more
   // efficient. Returns true if sampling is more efficient.
   inline bool DrawBetterThanShuffle(const int sample_size,
@@ -84,7 +83,7 @@ class UniformSampling {
     for (int i = 0; i < sample_size_; ++i) {
       bool found = true;
       while (found) {
-        found = false;
+        found     = false;
         sample[i] = uniform_dstr_(rng_);
         for (int j = 0; j < i; ++j) {
           if (sample[j] == sample[i]) {
@@ -102,7 +101,7 @@ class UniformSampling {
   void ShuffleSample(std::vector<int>* random_sample) {
     random_sample->resize(num_data_);
     std::iota(random_sample->begin(), random_sample->end(), 0);
-    if (sample_size_ == num_data_) return;
+    if (sample_size_ == num_data_) { return; }
 
     // Fisher-Yates shuffling.
     RandomShuffle(random_sample);
@@ -113,27 +112,27 @@ class UniformSampling {
   // here following: https://lemire.me/blog/2016/10/10/a-case-study-in-the-
   // performance-cost-of-abstraction-cs-stdshuffle/
   void RandomShuffle(std::vector<int>* random_sample) {
-    std::vector<int>& sample = *random_sample;
-    const int kNumElements = static_cast<int>(sample.size());
+    std::vector<int>& sample       = *random_sample;
+    const int         kNumElements = static_cast<int>(sample.size());
     for (int i = 0; i < (kNumElements - 1); ++i) {
       std::uniform_int_distribution<int> dist(i, kNumElements - 1);
-      int idx = dist(rng_);
+      int                                idx = dist(rng_);
       std::swap(sample[i], sample[idx]);
     }
   }
 
   // The random number generator used by RANSAC.
-  std::mt19937 rng_;
+  std::mt19937                       rng_;
   std::uniform_int_distribution<int> uniform_dstr_;
   // The number of data points.
-  int num_data_;
+  int                                num_data_;
   // The size of a sample.
-  int sample_size_;
+  int                                sample_size_;
   // Whether it is cheaper (in terms of expected costs) to draw a sample of to
   // randomly shuffle the sample.
-  bool draw_sample_;
+  bool                               draw_sample_;
 };
 
-}  // namespace ransac_lib
+}    // namespace ransac_lib
 
-#endif  // RANSACLIB_RANSACLIB_SAMPLING_H_
+#endif    // RANSACLIB_RANSACLIB_SAMPLING_H_

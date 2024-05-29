@@ -2,17 +2,19 @@
 // main.cpp
 //
 // Manolis Lourakis (lourakis **at** ics forth gr), February 2022
-// 
-// Demo program for robust camera pose estimation from 3D - 2D correspondences with SQPnP
-// The demo uses SQPnP both as a minimal and as a non-minimal solver in a LO-RANSAC framework.
-// 
-// The program reads from two files: one with the camera intrinsics K and another containing
-// the 3D - 2D corresponding points in separate lines as
-// X Y Z x y
-// with x y in pixels. To use normalized coordinates for x y, specify the identity matrix as K
 //
-// For more advanced pose estimation (e.g., a non-linear refinement on the inliers),
-// check the posest library at https://users.ics.forth.gr/~lourakis/posest/ 
+// Demo program for robust camera pose estimation from 3D - 2D correspondences
+// with SQPnP The demo uses SQPnP both as a minimal and as a non-minimal solver
+// in a LO-RANSAC framework.
+//
+// The program reads from two files: one with the camera intrinsics K and
+// another containing the 3D - 2D corresponding points in separate lines as X Y
+// Z x y with x y in pixels. To use normalized coordinates for x y, specify the
+// identity matrix as K
+//
+// For more advanced pose estimation (e.g., a non-linear refinement on the
+// inliers), check the posest library at
+// https://users.ics.forth.gr/~lourakis/posest/
 //
 
 #include <cstdio>
@@ -26,54 +28,56 @@
 
 #include "robust_pose_pnp.h"
 
-
 #define MAXSTRLEN 1024
 
 /* read matching points from a file and normalize the projections */
-static int readMatchingPoints(char *fname, std::vector<sqpnp::_Projection>& pts2D, std::vector<sqpnp::_Point>& pts3D)
-{
-register int i;
-int ncoords, nmatches;
-double X, Y, Z, x, y;
-FILE *fp;
-char buf[MAXSTRLEN], *ptr;
-long int fpos;
+static int readMatchingPoints(char                            *fname,
+                              std::vector<sqpnp::_Projection> &pts2D,
+                              std::vector<sqpnp::_Point>      &pts3D) {
+  register int i;
+  int          ncoords, nmatches;
+  double       X, Y, Z, x, y;
+  FILE        *fp;
+  char         buf[MAXSTRLEN], *ptr;
+  long int     fpos;
 
-  if((fp=fopen(fname, "r"))==NULL){
+  if ((fp = fopen(fname, "r")) == NULL) {
     fprintf(stderr, "cannot open file %s\n", fname);
     exit(1);
   }
 
-  do{
-    fpos=ftell(fp);
-    ptr=fgets(buf, MAXSTRLEN-1, fp);
-    if(!ptr || ferror(fp)){
+  do {
+    fpos = ftell(fp);
+    ptr  = fgets(buf, MAXSTRLEN - 1, fp);
+    if (!ptr || ferror(fp)) {
       fprintf(stderr, "File %s: error reading line \"%s\"\n", fname, ptr);
       exit(1);
     }
-  } while(!feof(fp) && buf[0]=='#'); /* skip comments */
+  } while (!feof(fp) && buf[0] == '#'); /* skip comments */
 
-  if(feof(fp)){
+  if (feof(fp)) {
     fclose(fp);
     return 0;
   }
 
-  ncoords=sscanf(buf, "%lf%lf%lf%lf%lf", &X, &Y, &Z, &x, &y);
-  if(ncoords==5){ /* no lines number */
-    for(nmatches=1; !feof(fp); nmatches++){
-      i=fscanf(fp, "%*g%*g%*g%*g%*g\n");
-      if(ferror(fp)){
-        fprintf(stderr, "File %s: error reading point coordinates, line %d\n", fname, nmatches + 1);
+  ncoords = sscanf(buf, "%lf%lf%lf%lf%lf", &X, &Y, &Z, &x, &y);
+  if (ncoords == 5) { /* no lines number */
+    for (nmatches = 1; !feof(fp); nmatches++) {
+      i = fscanf(fp, "%*g%*g%*g%*g%*g\n");
+      if (ferror(fp)) {
+        fprintf(stderr,
+                "File %s: error reading point coordinates, line %d\n",
+                fname,
+                nmatches + 1);
         exit(1);
       }
     }
 
-    if(fseek(fp, fpos, SEEK_SET)){ /* rewind right after any comment lines */
+    if (fseek(fp, fpos, SEEK_SET)) { /* rewind right after any comment lines */
       fprintf(stderr, "fseek failed in readMatchingPoints()\n");
       exit(1);
     }
-  }
-  else{
+  } else {
     sscanf(buf, "%d", &nmatches);
   }
 
@@ -81,16 +85,23 @@ long int fpos;
   pts3D.reserve(nmatches);
 
   /* read in points and store them */
-  for(i=0; !feof(fp); i++){
-    ncoords=fscanf(fp, "%lf%lf%lf%lf%lf\n", &X, &Y, &Z, &x, &y);
-    if(ncoords==EOF) break;
+  for (i = 0; !feof(fp); i++) {
+    ncoords = fscanf(fp, "%lf%lf%lf%lf%lf\n", &X, &Y, &Z, &x, &y);
+    if (ncoords == EOF) { break; }
 
-    if(ncoords!=5){
-      fprintf(stderr, "File %s: line %d contains only %d coordinates\n", fname, i + 1, ncoords);
+    if (ncoords != 5) {
+      fprintf(stderr,
+              "File %s: line %d contains only %d coordinates\n",
+              fname,
+              i + 1,
+              ncoords);
       exit(1);
     }
-    if(ferror(fp)){
-      fprintf(stderr, "File %s: error reading point coordinates, line %d\n", fname, i + 1);
+    if (ferror(fp)) {
+      fprintf(stderr,
+              "File %s: error reading point coordinates, line %d\n",
+              fname,
+              i + 1);
       exit(1);
     }
 
@@ -99,9 +110,13 @@ long int fpos;
   }
   fclose(fp);
 
-  if(i!=nmatches){
-    fprintf(stderr, "number of actual points in file %s does not agree with that in first line (%d != %d)!\n",
-                     fname, i, nmatches);
+  if (i != nmatches) {
+    fprintf(stderr,
+            "number of actual points in file %s does not agree with that in "
+            "first line (%d != %d)!\n",
+            fname,
+            i,
+            nmatches);
     exit(1);
   }
 
@@ -109,80 +124,87 @@ long int fpos;
 }
 
 /* reads the 3x3 intrinsic calibration matrix contained in a file */
-static void readCalibParams(char *fname, double K[9])
-{
+static void readCalibParams(char *fname, double K[9]) {
   FILE *fp;
-  int i, ch=EOF;
-  char buf[MAXSTRLEN];
+  int   i, ch = EOF;
+  char  buf[MAXSTRLEN];
 
-  if((fp=fopen(fname, "r"))==NULL){
+  if ((fp = fopen(fname, "r")) == NULL) {
     fprintf(stderr, "cannot open file %s, exiting\n", fname);
     exit(1);
   }
 
-  while(!feof(fp) && (ch=fgetc(fp))=='#') /* skip comments */
-    (void)!fgets(buf, MAXSTRLEN-1, fp);
+  while (!feof(fp) && (ch = fgetc(fp)) == '#') { /* skip comments */
+    (void) !fgets(buf, MAXSTRLEN - 1, fp);
+  }
 
-  if(feof(fp)){
+  if (feof(fp)) {
     fclose(fp);
-    K[0]=K[1]=K[2]=K[3]=K[4]=K[5]=K[6]=K[7]=K[8]=0.0;
+    K[0] = K[1] = K[2] = K[3] = K[4] = K[5] = K[6] = K[7] = K[8] = 0.0;
     return;
   }
 
   ungetc(ch, fp);
 
-  for(i=0; i<3; i++){
-    if(fscanf(fp, "%lf%lf%lf\n", K, K+1, K+2)!=3){
-      fprintf(stderr, "cannot read three numbers from row %d in file %s, exiting\n", i+1, fname);
+  for (i = 0; i < 3; i++) {
+    if (fscanf(fp, "%lf%lf%lf\n", K, K + 1, K + 2) != 3) {
+      fprintf(stderr,
+              "cannot read three numbers from row %d in file %s, exiting\n",
+              i + 1,
+              fname);
       exit(1);
     }
-    K+=3;
+    K += 3;
   }
 
   fclose(fp);
 }
 
-
-int main(int argc, char *argv[])
-{
-  std::vector<sqpnp::_Point> pts3D;
+int main(int argc, char *argv[]) {
+  std::vector<sqpnp::_Point>      pts3D;
   std::vector<sqpnp::_Projection> pts2D;
-  std::vector<sqpnp::_Projection> npts2D; // normalized
+  std::vector<sqpnp::_Projection> npts2D;    // normalized
 
-  int numpts;
-  char *icalfile, *matchesfile;
-  static const double eye3[9]={1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0}; // eye(3)
+  int                 numpts;
+  char               *icalfile, *matchesfile;
+  static const double eye3[9] =
+      {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};    // eye(3)
   double ical[9];
 
   std::chrono::time_point<std::chrono::high_resolution_clock> start, stop;
 
   /* arguments parsing */
-  if(argc!=3){
-    fprintf(stderr, "Usage: %s <K> <matched points>\n   '-' for K signals already normalized image points\n", argv[0]);
+  if (argc != 3) {
+    fprintf(stderr,
+            "Usage: %s <K> <matched points>\n   '-' for K signals already "
+            "normalized image points\n",
+            argv[0]);
     exit(1);
   }
 
-  icalfile=argv[1];
-  matchesfile=argv[2];
+  icalfile    = argv[1];
+  matchesfile = argv[2];
 
-  if(strncmp(icalfile, "-", 1))
+  if (strncmp(icalfile, "-", 1)) {
     readCalibParams(icalfile, ical);
-  else
-    std::memcpy(ical, eye3, 9*sizeof(double));
+  } else {
+    std::memcpy(ical, eye3, 9 * sizeof(double));
+  }
 
-  numpts=readMatchingPoints(matchesfile, pts2D, pts3D);
-  std::cout << argv[0] << ": read " << numpts << " points"<< std::endl;
+  numpts = readMatchingPoints(matchesfile, pts2D, pts3D);
+  std::cout << argv[0] << ": read " << numpts << " points" << std::endl;
 
-  Eigen::Matrix<double, 3, 3> K = Eigen::Map<Eigen::Matrix<double, 3, 3, Eigen::RowMajor> > (ical);
-  Eigen::Matrix<double, 3, 3> K1= K.inverse();
+  Eigen::Matrix<double, 3, 3> K =
+      Eigen::Map<Eigen::Matrix<double, 3, 3, Eigen::RowMajor>>(ical);
+  Eigen::Matrix<double, 3, 3> K1 = K.inverse();
 
   // normalize projections
   npts2D.reserve(numpts);
-  for(int i=0; i<numpts; ++i){
-    const double x=pts2D[i].vector[0], y=pts2D[i].vector[1];
+  for (int i = 0; i < numpts; ++i) {
+    const double x = pts2D[i].vector[0], y = pts2D[i].vector[1];
 
-    const double nx=K1(0, 0)*x + K1(0, 1)*y + K1(0, 2);
-    const double ny=K1(1, 0)*x + K1(1, 1)*y + K1(1, 2);
+    const double nx = K1(0, 0) * x + K1(0, 1) * y + K1(0, 2);
+    const double ny = K1(1, 0) * x + K1(1, 1) * y + K1(1, 2);
     npts2D.emplace_back(nx, ny);
   }
 
@@ -191,7 +213,6 @@ int main(int argc, char *argv[])
     printf("%g %g %g  %g %g\n", pts3D[i].vector[0], pts3D[i].vector[1], pts3D[i].vector[2], npts2D[i].vector[0], npts2D[i].vector[1]);
   }
 #endif
-
 
   // the following will run SQPnP on all input points
 #if 0
@@ -220,14 +241,13 @@ int main(int argc, char *argv[])
   std::cout << "Time taken by SQPnP: " << micros.count() << " microseconds" << std::endl << std::endl;
 #endif
 
-
   start = std::chrono::high_resolution_clock::now();
 
   robust_pose_pnp::Matrix34d bestRt;
-  std::vector<int> outidx;
+  std::vector<int>           outidx;
 
   robust_pose_pnp::PoseEstimator rpe(&pts3D, &npts2D, 4 /*3*/, 50);
-  //rpe.set_sample_sizes(4, 30); // changes sample sizes dynamically
+  // rpe.set_sample_sizes(4, 30); // changes sample sizes dynamically
   rpe.ransacfit(25, 200, 0.8, 0.01, bestRt, nullptr, &outidx);
 
   stop = std::chrono::high_resolution_clock::now();
@@ -236,12 +256,15 @@ int main(int argc, char *argv[])
   std::cout << bestRt << std::endl;
 
   std::cout << "\nOutlying pairs" << std::endl;
-  for(size_t i=0; i < outidx.size(); i++)
-    std::cout << outidx[i] << ' ';
+  for (size_t i = 0; i < outidx.size(); i++) { std::cout << outidx[i] << ' '; }
   std::cout << std::endl;
 
-  auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-  std::cout << "Time taken by RANSAC: " << millis.count() << " milliseconds" << std::endl << std::endl << std::flush;
+  auto millis =
+      std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+  std::cout << "Time taken by RANSAC: " << millis.count() << " milliseconds"
+            << std::endl
+            << std::endl
+            << std::flush;
 
   return 0;
 }

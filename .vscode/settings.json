@@ -1,76 +1,103 @@
 {
-    "editor.formatOnSave": true,
+    "files.encoding": "utf8",
     // ------------------------------------------- cmake tools -------------------------------------------
-    "cmake.buildTask": true,
-    "cmake.configureOnEdit": false,
-    "cmake.configureArgs": [
-        // build args
-        "-G=Ninja"
-    ],
+    "cmake.configureOnEdit": true,
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.installPrefix": "${workspaceFolder}/install",
+    "cmake.sourceDirectory": "${workspaceFolder}",
+    "cmake.configureArgs": [
+        // add your configure arguments
+        // "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_BUILD_TYPE=Debug",
+        "-DCMAKE_VERBOSE_MAKEFILE=ON",
+        // "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        // "--log-level=DEBUG",
+        // for cross compile
+        // "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/cmake/toolchains/x86_64_linux-gcc_7.5.0-aarch64_linaro.cmake",
+        // "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/cmake/toolchains/x86_64_linux-gcc_11.3.1-aarch64_linaro.cmake",
+    ],
+    "cmake.buildArgs": [
+        // add your build arguments
+        "--verbose",
+    ],
+    "cmake.buildTask": false,
+    "cmake.launchBehavior": "reuseTerminal",
     "cmake.configureOnOpen": false,
-    // "cmake.useCMakePresets": "always",
+    "cmake.generator": "Ninja",
+    "cmake.exportCompileCommandsFile": true,
+    "cmake.options.statusBarVisibility": "icon",
+    "cmake.skipConfigureIfCachePresent": true,
+    // cmake lanuage support plugin
+    "cmake.languageSupport.dotnetPath": "dotnet",
     // ------------------------------------------- cmake tools -------------------------------------------
-    "C_Cpp.formatting": "disabled",
-    "files.associations": {
-        "cctype": "cpp",
-        "clocale": "cpp",
-        "cmath": "cpp",
-        "cstdarg": "cpp",
-        "cstddef": "cpp",
-        "cstdio": "cpp",
-        "cstdlib": "cpp",
-        "cstring": "cpp",
-        "ctime": "cpp",
-        "cwchar": "cpp",
-        "cwctype": "cpp",
-        "array": "cpp",
-        "atomic": "cpp",
-        "bit": "cpp",
-        "*.tcc": "cpp",
-        "chrono": "cpp",
-        "compare": "cpp",
-        "complex": "cpp",
-        "concepts": "cpp",
-        "condition_variable": "cpp",
-        "cstdint": "cpp",
-        "deque": "cpp",
-        "map": "cpp",
-        "set": "cpp",
-        "string": "cpp",
-        "unordered_map": "cpp",
-        "vector": "cpp",
-        "exception": "cpp",
-        "algorithm": "cpp",
-        "functional": "cpp",
-        "iterator": "cpp",
-        "memory": "cpp",
-        "memory_resource": "cpp",
-        "numeric": "cpp",
-        "random": "cpp",
-        "ratio": "cpp",
-        "string_view": "cpp",
-        "system_error": "cpp",
-        "tuple": "cpp",
-        "type_traits": "cpp",
-        "utility": "cpp",
-        "initializer_list": "cpp",
-        "iosfwd": "cpp",
-        "iostream": "cpp",
-        "istream": "cpp",
-        "limits": "cpp",
-        "mutex": "cpp",
-        "new": "cpp",
-        "numbers": "cpp",
-        "ostream": "cpp",
-        "semaphore": "cpp",
-        "sstream": "cpp",
-        "stdexcept": "cpp",
-        "stop_token": "cpp",
-        "streambuf": "cpp",
-        "thread": "cpp",
-        "cinttypes": "cpp",
-        "typeinfo": "cpp"
-    }
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "C_Cpp.autocompleteAddParentheses": true,
+    "C_Cpp.default.cStandard": "c99",
+    "C_Cpp.default.cppStandard": "c++20",
+    "C_Cpp.caseSensitiveFileSupport": "enabled",
+    "C_Cpp.clang_format_fallbackStyle": "none",
+    "C_Cpp.clang_format_path": "/usr/bin/clang-format-18", // clang-format should in env
+    "C_Cpp.formatting": "clangFormat",
+    "C_Cpp.refactoring.includeHeader": "ifNeeded",
+    "C_Cpp.autoAddFileAssociations": false,
+    "C_Cpp.codeAnalysis.clangTidy.codeAction.formatFixes": false,
+    "C_Cpp.codeAnalysis.runAutomatically": false,
+    // ------------------------------------------- formatter -------------------------------------------
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
+    "cmakeFormat.exePath": "cmake-format",
+    // windows has wrong path start with /d:
+    // https://github.com/cheshirekow/cmake_format/issues/327
+    "cmakeFormat.cwd": "${workspaceFolder}",
+    "cmakeFormat.env": {
+        "PYTHONPATH": "python3", // pip install cmake_format
+    },
+    "cmakeFormat.args": [
+        "--config-file",
+        "${workspaceFolder}/.cmake-format"
+    ],
+    // ------------------------------------------- formatter -------------------------------------------
+    // ------------------------------------------- tests     -------------------------------------------
+    "testMate.cpp.debug.configTemplate": null,
+    "testMate.cpp.discovery.loadOnStartup": true,
+    // ------------------------------------------- tests end -------------------------------------------
+    // ------------------------------------------- Build Output Colorizer ------------------------------
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "markup.other.log.error",
+                "settings": {
+                    "foreground": "#ff0000"
+                }
+            },
+            {
+                "scope": "markup.other.log.warn",
+                "settings": {
+                    "foreground": "#fbff00"
+                }
+            },
+            {
+                "scope": "markup.other.log.info",
+                "settings": {
+                    "foreground": "#dad7e0"
+                }
+            },
+            {
+                "scope": "markup.other.log.debug",
+                "settings": {
+                    "foreground": "#20d010"
+                }
+            },
+            {
+                "scope": "markup.other.log.highlight",
+                "settings": {
+                    "foreground": "#4631b1"
+                }
+            }
+        ]
+    },
+    // ------------------------------------------- Build Output Colorizer ------------------------------
+    // ------------------------------------------- extra Windows env ----------------------------------
+    "remote.WSL.debug": true,
+    // ------------------------------------------- extra Windows env end ------------------------------
 }
